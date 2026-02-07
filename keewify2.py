@@ -15,6 +15,7 @@ bot = discord.Bot()
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
+intents.guilds = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 vowels = [
         'a',
@@ -223,7 +224,7 @@ murdermsgs = [
     "thats evil",
     "<:emoji_53:1467954916533207091>"
 ]
-
+# Get welcome channel for use.
 
 @bot.command()
 async def keewify(ctx, *, message_content):
@@ -237,14 +238,27 @@ async def dihify(ctx, *, message_content):
     await ctx.send(f'{ret}')
 @bot.command()
 async def murder(ctx, *, message_content):
+    print("Murdered.")
     await ctx.send(f'{message_content}: {random.choice(murdermsgs)}!')
+
 
 @bot.event
 async def on_member_join(member):
-    print("Member joined!!")
-    channel = discord.utils.get(member.guild.text_channels, name='welcome')
+    # Due to how pycord works, this is the necessary implementation.
+    # It must be added in every instance it is used.
+    welcome = discord.utils.get(member.guild.text_channels, name='welcome')
 
-    await channel.send(f'-# <@{member.id}>\n{random.choice(welcomemsgs)}! \n\nYou are member #{member.guild.member_count}! \n Make sure you get reactions roles from <#1283449236209270815>!')
+    print("Member joined: {member.display_name}")
+
+    await welcome.send(f'-# <@{member.id}>\n{random.choice(welcomemsgs)}! \n\nYou are member #{member.guild.member_count}! \n Make sure you get reactions roles from <#1283449236209270815>!')
+
+@bot.event
+async def on_member_ban(guild, user):
+
+    welcome = bot.get_channel(1283237643458711645)
+
+    print(f"Member banned: {user.display_name}")
+    await welcome.send(f"<@{user.id}> was banned! Cya, anti-shatling!")
 
 bot.run(os.getenv('TOKEN')) # run the bot with the token
 
