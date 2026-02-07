@@ -11,12 +11,16 @@ import datetime
 from dotenv import load_dotenv
 asyncio.set_event_loop(asyncio.new_event_loop())
 load_dotenv() # load all the variables from the env file
+
 bot = discord.Bot()
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
 intents.guilds = True
+intents.moderation = True
+
 bot = commands.Bot(command_prefix='!', intents=intents)
+
 vowels = [
         'a',
         'i',
