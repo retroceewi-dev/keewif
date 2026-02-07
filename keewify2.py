@@ -248,7 +248,7 @@ async def on_member_join(member):
     # It must be added in every instance it is used.
     welcome = discord.utils.get(member.guild.text_channels, name='welcome')
 
-    print("Member joined: {member.display_name}")
+    print(f"Member joined: {member.display_name}")
 
     await welcome.send(f'-# <@{member.id}>\n{random.choice(welcomemsgs)}! \n\nYou are member #{member.guild.member_count}! \n Make sure you get reactions roles from <#1283449236209270815>!')
 
