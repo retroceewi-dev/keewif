@@ -18,7 +18,7 @@ intents.message_content = True
 intents.members = True
 intents.guilds = True
 intents.moderation = True
-intents.bans = True
+
 
 
 bot = commands.Bot(command_prefix='!', intents=intents)
@@ -217,8 +217,8 @@ async def on_ready():
 #     print(ret)
 #     time.sleep(0.1)
 #     await ctx.respond(f'{ret}')
-welcomemsgs = [
-    "Welcome ",
+welcomemsgs = [ # I use an array to avoid clutter. If it didn't lead to clutter, I would absolutely
+                # have this be an inline message.
     "You're now a shatling ",
     "Hey lil twin, you're looking gurtilicious today! <:emoji_53:1467954916533207091> ",
     "Hey shatling! Keewi isn't gay, nor is she ginger. <:O_O:1462370057194831873>",
@@ -255,16 +255,26 @@ async def on_member_join(member):
     welcome = discord.utils.get(member.guild.text_channels, name='welcome')
 
     print(f"Member joined: {member.display_name}")
-
-    await welcome.send(f'-# <@{member.id}>\n{random.choice(welcomemsgs)}! \n\nYou are member #{member.guild.member_count}! \n Make sure you get reactions roles from <#1283449236209270815>!')
+    x = random.randint(1, 100)
+    match x:
+        case num if num in range(1, 21):
+            msg = welcomemsgs[0]
+        case num if num in range(21, 41):
+            msg = welcomemsgs[1]
+        case num if num in range(41, 61):
+            msg = welcomemsgs[2]
+        case num if num in range(61, 81):
+            msg = welcomemsgs[3]
+        case _:
+            msg = "Welcome!" # This is just a default case.
+    await welcome.send(f'-# <@{member.id}>\n{msg}! \n\nYou are member #{member.guild.member_count}! \n Make sure you get reactions roles from <#1283449236209270815>!')
 
 @bot.event
-async def on_member_ban(guild, user):
+async def on_member_ban(guild, member):
 
-    welcome = bot.get_channel(1283237643458711645)
-
-    print(f"Member banned: {user.display_name}")
-    await welcome.send(f"<@{user.id}> was banned! Cya, anti-shatling!")
+    welcome = discord.utils.get(member.guild.text_channels, name='welcome')
+    print(f"Member banned: {member.display_name}")
+    await welcome.send(f"<@{member.id}> was banned! Cya!")
 
 bot.run(os.getenv('TOKEN')) # run the bot with the token
 
