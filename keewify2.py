@@ -18,6 +18,8 @@ intents.message_content = True
 intents.members = True
 intents.guilds = True
 intents.moderation = True
+intents.bans = True
+
 
 bot = commands.Bot(command_prefix='!', intents=intents)
 
