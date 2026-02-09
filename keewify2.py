@@ -278,7 +278,7 @@ async def on_member_ban(guild, user):
 
 @bot.event
 async def on_command_error(ctx, error):
-    print(f"Command errored in {ctx.guild} channel {ctx.channel}.")
+    print(f"Command sent with \n'{ctx.message.content}'\n errored in {ctx.guild} channel #{ctx.channel}.")
     
 
 bot.run(os.getenv('TOKEN')) # run the bot with the token
