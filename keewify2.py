@@ -270,11 +270,16 @@ async def on_member_join(member):
     await welcome.send(f'-# <@{member.id}>\n{msg}! \n\nYou are member #{member.guild.member_count}! \n Make sure you get reactions roles from <#1283449236209270815>!')
 
 @bot.event
-async def on_member_ban(guild, member):
+async def on_member_ban(guild, user):
 
-    welcome = discord.utils.get(member.guild.text_channels, name='welcome')
-    print(f"Member banned: {member.display_name}")
-    await welcome.send(f"<@{member.id}> was banned! Cya!")
+    welcome = bot.get_channel(1283237643458711645)
+    print(f"Member banned: {user.display_name}")
+    await welcome.send(f"<@{user.id}> was banned! Cya!")
+
+@bot.event
+async def on_command_error(ctx, error):
+    print(f"Command errored in {ctx.guild} channel {ctx.channel}.")
+    
 
 bot.run(os.getenv('TOKEN')) # run the bot with the token
 
