@@ -7,18 +7,22 @@ import asyncio
 import re
 import random
 import datetime
-
+from zoneinfo import ZoneInfo
 from dotenv import load_dotenv
+
+
 asyncio.set_event_loop(asyncio.new_event_loop())
 load_dotenv() # load all the variables from the env file
 
 bot = discord.Bot()
+
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
 intents.guilds = True
 intents.moderation = True
-
+intents.reactions = True
+# intents.roles = True
 
 
 bot = commands.Bot(command_prefix='!', intents=intents)
@@ -222,13 +226,18 @@ welcomemsgs = [ # I use an array to avoid clutter. If it didn't lead to clutter,
     "You're now a shatling ",
     "Hey lil twin, you're looking gurtilicious today! <:emoji_53:1467954916533207091> ",
     "Hey shatling! Keewi isn't gay, nor is she ginger. <:O_O:1462370057194831873>",
-    "Welcome to the Keewiverse. We have been awaiting your arrival. <:gurt:1461601994857775282>"
+    "Welcome to the Keewiverse. We have been awaiting your arrival. <:gurt:1461601994857775282>",
+    "mrrrrp mrow mrrp mrrp mrow meeoowwww mrrp mrrp meow mrrp purrrr"
 ]
 murdermsgs = [
     "AHHHHHHH!",
     "I TRUSTED YOU!",
     "thats evil",
-    "<:emoji_53:1467954916533207091>"
+    "<:emoji_53:1467954916533207091>",
+    "what the FREAK bro",
+    "that hurts",
+    "zamn...",
+    "hohoho! no. yueessss. no."
 ]
 # Get welcome channel for use.
 
@@ -247,6 +256,164 @@ async def murder(ctx, *, message_content):
     print("Murdered.")
     await ctx.send(f'{message_content}: {random.choice(murdermsgs)}!')
 
+exclude = [
+        641468688620584970,
+        1405772116867158039,
+        1493442279267106837,
+        759712287396200479,
+        900013076089294908
+    ]
+
+@bot.command()
+async def listss(ctx):
+    print("listss")
+    ids = [
+        1285018696951140487,
+        1403573321316040837,
+        1287929568069554209,
+        1446991754476916779
+    ]
+
+    allow = False
+    for role in ctx.author.roles:
+        if not allow:
+            if role.id in ids:
+                allow = True
+    else:
+        pass
+    if allow:
+        message = ""
+        for user in ctx.guild.members:
+            if user.joined_at.astimezone(ZoneInfo("US/Pacific")).date() > datetime.date(2026, 1, 17):
+                for role in user.roles:
+                    if role.id == 1283473032719110204 and not user.id in exclude:
+                        if len(message) > 500:
+                            await ctx.send(message)
+                            message = ""
+                        message += (f"<@{str(user.id)}> is a 16-17.\n")
+        if not message == "":
+            await ctx.send(message)
+        else:
+            await ctx.send("No 16-17s found! Teh...")
+                        
+@bot.command()
+async def listssquiet(ctx):
+    print("listss")
+    ids = [
+        1285018696951140487,
+        1403573321316040837,
+        1287929568069554209,
+        1446991754476916779
+    ]
+    
+    allow = False
+    for role in ctx.author.roles:
+        if not allow:
+            if role.id in ids:
+                allow = True
+    else:
+        pass
+    if allow:
+        message = ""
+        for user in ctx.guild.members:
+            if user.joined_at.astimezone(ZoneInfo("US/Pacific")).date() > datetime.date(2026, 1, 17):
+                for role in user.roles:
+                    if role.id == 1283473032719110204 and not user.id in exclude:
+                        if len(message) > 500:
+                            await ctx.send(message)
+                            message = ""
+                        message += (f"<@{str(user.id)}>\n")
+        if not message == "":
+            await ctx.send(message)
+        else:
+            await ctx.send("No 16-17s found! Teh...")
+                        
+ageroles = [
+    1290492844838096956,
+    1283473260003983430,
+    1283473032719110204
+]
+@bot.command()
+async def listroleless(ctx):
+    print("listroleless")
+    
+    ids = [
+        1285018696951140487,
+        1403573321316040837,
+        1287929568069554209,
+        1446991754476916779
+    ]
+
+    allow = False
+    for role in ctx.author.roles:
+        if not allow:
+            if role.id in ids:
+                allow = True
+    
+    
+  
+    message = ""
+    total = 0
+    if allow:
+        for user in ctx.guild.members:
+            if user.joined_at.astimezone(ZoneInfo("US/Pacific")).date() < datetime.datetime.now().astimezone(ZoneInfo("US/Pacific")).date() - datetime.timedelta(7):
+                sendInMsg = False
+                increment = 0
+                total += 1
+                for role in user.roles:
+                    if role.id in ageroles:
+                        increment += 1
+                if increment < 1 and user.id != 1467664380949696665:    
+                    message += (f"<@{str(user.id)}>")
+                if len(message) + 30 >= 500:
+                    await ctx.send(message)
+                    message = ""
+    if not message == "":
+        await ctx.send(message)
+        await ctx.send(str(total) + " Roleless members found.")
+    else:
+        await ctx.send("None of the Roleless were found! Teh...")
+                   
+@bot.command()
+async def kickroleless(ctx):
+    print("listroleless")
+    
+    ids = [
+        1285018696951140487,
+        1403573321316040837,
+        1287929568069554209,
+        1446991754476916779
+    ]
+
+    allow = False
+    for role in ctx.author.roles:
+        if not allow:
+            if role.id in ids:
+                allow = True
+    
+    
+  
+    message = ""
+    total = 0
+    if allow:
+        for user in ctx.guild.members:
+            if user.joined_at.astimezone(ZoneInfo("US/Pacific")).date() < datetime.datetime.now().astimezone(ZoneInfo("US/Pacific")).date() - datetime.timedelta(7):
+                sendInMsg = False
+                increment = 0
+                total += 1
+                for role in user.roles:
+                    if role.id in ageroles:
+                        increment += 1
+                if increment < 1 and user.id != 1467664380949696665:    
+                    await user.kick(reason="NO age role selected.")
+                if len(message) + 30 >= 500:
+                    await ctx.send(message)
+                    message = ""
+    if not message == "":
+        await ctx.send(message)
+        await ctx.send(str(total) + " members were found / kicked.")
+    else:
+        await ctx.send("None of the Roleless were found nor kicked! Teh...")
 
 @bot.event
 async def on_member_join(member):
@@ -265,6 +432,8 @@ async def on_member_join(member):
             msg = welcomemsgs[2]
         case num if num in range(61, 81):
             msg = welcomemsgs[3]
+        case num if num in range(81, 100):
+            msg = welcomemsgs[4]
         case _:
             msg = "Welcome!" # This is just a default case.
     await welcome.send(f'-# <@{member.id}>\n{msg}! \n\nYou are member #{member.guild.member_count}! \n Make sure you get reactions roles from <#1283449236209270815>!')
@@ -279,7 +448,60 @@ async def on_member_ban(guild, user):
 @bot.event
 async def on_command_error(ctx, error):
     print(f"Command sent with \n'{ctx.message.content}'\n errored in {ctx.guild} channel #{ctx.channel}.")
-    
-
+    print(f"error: {error}")
+@bot.event
+async def on_reaction_add(reaction, user):
+    # print("Reaction added.")
+    blunderboard = bot.get_channel(1495212872417017897)
+    try:
+        if reaction.emoji.id == 1443027776771719329:
+            # print("Blundered....")
+            try:
+                if reaction.count == 4:
+                    print("BLUNDER...!")
+                    myembed = discord.Embed(
+                        title=f"Blunder! x{reaction.count}",
+                        description = f"{reaction.message.content}\n\n[Jump to Message]({reaction.message.jump_url})",
+                        color = discord.Color.blurple(),
+                    )
+                    myembed.set_author(name=reaction.message.author.display_name, icon_url=reaction.message.author.display_avatar)
+                    myembed.set_thumbnail(url="https://cdn.discordapp.com/emojis/1443027776771719329.webp")
+                    myembed.set_footer(text=f"{reaction.message.id}")
+                    if reaction.message.attachments != []:
+                        myembed.description += f"\n\n[Jump to Attachment]({reaction.message.attachments[0].url})",
+                        myembed.set_image(url=reaction.message.attachments[0].url)
+                    x = []
+                    send = True
+                    async for i in blunderboard.history(limit=100, oldest_first = False):
+                        if not str(reaction.message.id) in i.embeds[0].footer.text:
+                            pass
+                        else:
+                            send = False
+                            break
+                    if send:
+                        await blunderboard.send(embed=myembed)
+                elif reaction.count >= 5:
+                    async for amessage in blunderboard.history(limit=100, oldest_first = False):
+                        if amessage.embeds != []:
+                            try:
+                                if str(reaction.message.id) in amessage.embeds[0].footer.text:
+                                    myembed = discord.Embed(
+                                        title=f"Blunder! x{reaction.count}",
+                                        description = f"{reaction.message.content}\n\n[Jump to Message]({reaction.message.jump_url})",
+                                        color = discord.Color.blurple(),
+                                    )
+                                    myembed.set_author(name=reaction.message.author.display_name, icon_url=reaction.message.author.display_avatar)
+                                    myembed.set_thumbnail(url="https://cdn.discordapp.com/emojis/1443027776771719329.webp")
+                                    myembed.set_footer(text=f"{reaction.message.id}")
+                                    if reaction.message.attachments != []:
+                                        myembed.description += f"\n\n[Jump to Attachment]({reaction.message.attachments[0].url})",
+                                        myembed.set_image(url=reaction.message.attachments[0].url)
+                                    await amessage.edit(embed=myembed)
+                            except AttributeError:
+                                pass
+            except AttributeError:
+                pass
+    except AttributeError:
+        pass
 bot.run(os.getenv('TOKEN')) # run the bot with the token
 
