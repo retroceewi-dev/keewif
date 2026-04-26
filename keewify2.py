@@ -392,7 +392,6 @@ async def kickroleless(ctx):
                 allow = True
     
     
-  
     message = ""
     total = 0
     if allow:
