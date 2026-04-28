@@ -34,6 +34,20 @@ vowels = [
         'u',
         'e'
     ]
+
+
+
+@bot.event
+async def on_ready():
+    print(f"{bot.user} is ready and online!   {datetime.datetime.now()}")
+    if bot.get_guild(1283235301355159694).get_member(bot.user.id).nick != "":
+        await bot.get_channel(1440833959096352898).send(f"{bot.get_guild(1283235301355159694).get_member(bot.user.id).nick} is now online!")
+    else:
+        await bot.get_channel(1440833959096352898).send(f"{bot.user.display_name} is now online!")
+
+
+# [Fun commands!]
+    # [long command :hdh:]
 def sentenceToKeewi(s): #string
 
     ignored = [
@@ -209,18 +223,8 @@ def sentenceToDih(s):
         print("t1" + str(t1))
         retsentence.append(''.join(t1))
         print(retsentence)
-    return ' '.join(retsentence)
-@bot.event
-async def on_ready():
-    print(f"{bot.user} is ready and online!   {datetime.datetime.now()}")
+    return ' '.join(retsentence) # [/]
 
-# @bot.slash_command(name="keewify", description="Keewify!")
-# async def keewify(ctx,
-#                   tokeewi: discord.Option(discord.SlashCommandOptionType.string)):
-#     ret = sentenceToKeewi(tokeewi)
-#     print(ret)
-#     time.sleep(0.1)
-#     await ctx.respond(f'{ret}')
 welcomemsgs = [ # I use an array to avoid clutter. If it didn't lead to clutter, I would absolutely
                 # have this be an inline message.
     "You're now a shatling ",
@@ -239,7 +243,6 @@ murdermsgs = [
     "zamn...",
     "hohoho! no. yueessss. no."
 ]
-# Get welcome channel for use.
 
 @bot.command()
 async def keewify(ctx, *, message_content):
@@ -255,14 +258,19 @@ async def dihify(ctx, *, message_content):
 async def murder(ctx, *, message_content):
     print("Murdered.")
     await ctx.send(f'{message_content}: {random.choice(murdermsgs)}!')
+ # [/]
 
+
+# ------------------------------
+
+# [Roles]
 exclude = [
-        641468688620584970,
-        1405772116867158039,
-        1493442279267106837,
-        759712287396200479,
-        900013076089294908
-    ]
+    641468688620584970,
+    1405772116867158039,
+    1493442279267106837,
+    759712287396200479,
+    900013076089294908
+]
 
 @bot.command()
 async def listss(ctx):
@@ -305,7 +313,7 @@ async def listssquiet(ctx):
         1287929568069554209,
         1446991754476916779
     ]
-    
+
     allow = False
     for role in ctx.author.roles:
         if not allow:
@@ -329,14 +337,15 @@ async def listssquiet(ctx):
             await ctx.send("No 16-17s found! Teh...")
                         
 ageroles = [
-    1290492844838096956,
-    1283473260003983430,
-    1283473032719110204
+1290492844838096956,
+1283473260003983430,
+1283473032719110204,
+1462320862383308962
 ]
 @bot.command()
 async def listroleless(ctx):
     print("listroleless")
-    
+
     ids = [
         1285018696951140487,
         1403573321316040837,
@@ -349,9 +358,9 @@ async def listroleless(ctx):
         if not allow:
             if role.id in ids:
                 allow = True
-    
-    
-  
+
+
+
     message = ""
     total = 0
     if allow:
@@ -373,12 +382,12 @@ async def listroleless(ctx):
         await ctx.send(str(total) + " Roleless members found.")
     else:
         await ctx.send("None of the Roleless were found! Teh...")
-                   
+                
 @bot.command()
-async def kickroleless(ctx):
-    print("listroleless")
-    
-    ids = [
+async def addroleless(ctx):
+    print("addroleless")
+
+    adminIds = [
         1285018696951140487,
         1403573321316040837,
         1287929568069554209,
@@ -388,32 +397,60 @@ async def kickroleless(ctx):
     allow = False
     for role in ctx.author.roles:
         if not allow:
-            if role.id in ids:
+            if role.id in adminIds:
                 allow = True
-    
-    
+
+
     message = ""
     total = 0
     if allow:
         for user in ctx.guild.members:
             if user.joined_at.astimezone(ZoneInfo("US/Pacific")).date() < datetime.datetime.now().astimezone(ZoneInfo("US/Pacific")).date() - datetime.timedelta(7):
-                sendInMsg = False
-                increment = 0
-                total += 1
+                perform = False
                 for role in user.roles:
-                    if role.id in ageroles:
-                        increment += 1
-                if increment < 1 and user.id != 1467664380949696665:    
-                    await user.kick(reason="NO age role selected.")
-                if len(message) + 30 >= 500:
-                    await ctx.send(message)
-                    message = ""
-    if not message == "":
-        await ctx.send(message)
-        await ctx.send(str(total) + " members were found / kicked.")
-    else:
-        await ctx.send("None of the Roleless were found nor kicked! Teh...")
+                    if role.id != 1462320862383308962 and not role.id in ageroles:
+                        perform = True
+                    else:
+                        perform = False 
+                if perform :
+                    sendInMsg = False
+                    increment = 0
+                    
+                    canSend = True
+                    for role in user.roles:
+                        if role.id in ageroles:
+                            increment += 1
+                    if increment < 1 and user.id != 1467664380949696665:
+                        print(f"Added {user.id}")
+                        total += 1
+                        await user.add_roles(ctx.guild.get_role(1462320862383308962))
 
+
+                    if len(message) + 30 >= 500:
+                        await ctx.send(message)
+                        message = ""
+    # if not message == "":
+    #     await ctx.send(message)
+    #     await ctx.send(str(total) + " members were found / roled.")
+    if not canSend:
+        await ctx.send("I have no kick permissions.")
+    elif total > 1:
+        await ctx.send(str(total) + f" members were found / roled. \n ** **")
+    else:
+        await ctx.send("No members were roled.")
+ # [/]
+
+
+
+# [Server stuff]
+@bot.command()
+async def getpfp(ctx, *, message_content):
+    # try:
+    if int(re.sub(r'\D','',message_content)):
+    
+        await ctx.send(bot.get_user(int(re.sub(r'\D','',message_content))).display_avatar)
+    # except Exception:
+    #     await ctx.send(f"Could not get member {int(re.sub('[^0-9]','',message_content))}")
 @bot.event
 async def on_member_join(member):
     # Due to how pycord works, this is the necessary implementation.
@@ -449,7 +486,7 @@ async def on_command_error(ctx, error):
     print(f"Command sent with \n'{ctx.message.content}'\n errored in {ctx.guild} channel #{ctx.channel}.")
     print(f"error: {error}")
 @bot.event
-async def on_reaction_add(reaction, user):
+async def on_reaction_add(reaction, user): 
     # print("Reaction added.")
     blunderboard = bot.get_channel(1495212872417017897)
     try:
@@ -502,5 +539,7 @@ async def on_reaction_add(reaction, user):
                 pass
     except AttributeError:
         pass
-bot.run(os.getenv('TOKEN')) # run the bot with the token
+# [/]
 
+
+bot.run(os.getenv('TOKEN')) # Run the bot with the env token
