@@ -649,19 +649,21 @@ async def gamble(ctx: commands.Context):
         await ctx.send("Gambling! Gambling! Yay! \n-# please note this may take a bit.")
         uuids = []
         sendingfiles = []
-        final_message = ""
-        for attempt in range(5):
-            try:
-                dlopts = {"extract_flat": True, 
+        dlopts = {"extract_flat": True, 
                         "quiet": True,
                         "js_runtimes": {'node': {}}}
-                with YoutubeDL(dlopts) as ydl:
-                    channel = await asyncio.to_thread(ydl.extract_info, url="https://www.youtube.com/@keewidraws/videos", download=False )
-                    channel2 = await asyncio.to_thread(ydl.extract_info, url="https://www.youtube.com/@KeewiExtras/videos",download=False)
-                    # Now convert to total
-                    
-                    videos = [video for video in (channel["entries"] + channel2["entries"]) 
-                            if video and video.get("id")]
+        with YoutubeDL(dlopts) as ydl:
+            channel = await asyncio.to_thread(ydl.extract_info, url="https://www.youtube.com/@keewidraws/videos", download=False )
+            channel2 = await asyncio.to_thread(ydl.extract_info, url="https://www.youtube.com/@KeewiExtras/videos",download=False)
+            # Now convert to total
+            
+        videos = [video for video in (channel["entries"] + channel2["entries"]) 
+                if video and video.get("id")]
+        final_message = ""
+        for attempt in range(5):
+            
+            try:
+                
                     randvid = random.choice(videos)
                     vidurl = f"https://youtube.com/watch?v={randvid['id']}"
                     vidinfo = None
@@ -719,6 +721,95 @@ async def gamble(ctx: commands.Context):
         for uid in uuids:
             os.remove(f"{uid}.jpg")
         
+@bot.command()
+async def supergamble(ctx: commands.Context):
+    allow = False
+    for role in ctx.author.roles:
+        print(role)
+        if role.id in adminIds:
+            allow = True
+    if ctx.message.channel.id == 1468498879896096852 and allow:
+        await ctx.send("Heh...only because you're an admin. \n-# please note this may take a bit.")
+        uuids = []
+        sendingfiles = []
+        finalfiles = []
+        messagestosend =[]
+        dlopts = {"extract_flat": True, 
+                            "quiet": True,
+                            "js_runtimes": {'node': {}}}
+        with YoutubeDL(dlopts) as ydl:
+            channel = await asyncio.to_thread(ydl.extract_info, url="https://www.youtube.com/@keewidraws/videos", download=False )
+            channel2 = await asyncio.to_thread(ydl.extract_info, url="https://www.youtube.com/@KeewiExtras/videos",download=False)
+            # Now convert to total
+            
+            videos = [video for video in (channel["entries"] + channel2["entries"]) 
+                    if video and video.get("id")]
+        for oattempt in range(10):
+            print(f"Attempt {oattempt + 1}")
+            final_message = ""
+            for attempt in range(5):
+                
+                try:
+                    
+                        randvid = random.choice(videos)
+                        vidurl = f"https://youtube.com/watch?v={randvid['id']}"
+                        vidinfo = None
+                        loops = 0
+                        while not vidinfo:
+                            loops += 1
+                            try:
+                                randvid = random.choice(videos)
+                                vidurl = f"https://youtube.com/watch?v={randvid['id']}"
+                                vidinfo = await asyncio.to_thread(ydl.extract_info, vidurl, download=False)
+                                
+                                if loops > 10:
+                                    await ctx.reply("erm...i failed...im so sorry...")
+                                    return
+                            except Exception as e:
+                                continue
+                        # streamURL = vidinfo["url"]
+                        print(format_seconds(vidinfo["duration"]))
+                        frame = random.uniform(1, vidinfo["duration"])
+                        formats = vidinfo.get("formats", [])
+                        for ix, f in enumerate(formats):
+                            
+                            if f.get('height') == 360 and f.get('ext') == 'mp4' and '.m3u8' not in f.get('url'):
+                                streamURL = f.get("url")
+                                break
+                        if not streamURL:
+                            streamURL = next((f.get('url') for f in formats if f.get('height') == 360), None)
+                        
+                        # print(formats)
+                        # print(frame)
+                        vidContainer = pyav.open(streamURL)
+                        # print(vidContainer)
+                        vidContainer.seek(math.floor(frame) * 1_000_000, any_frame=False)
+                        # print(vidContainer)
+                        vidFrame = next(vidContainer.decode(video=0))
+                        # print(vidFrame)
+                        # img = vidFrame.to_image()
+                        img = vidFrame.to_ndarray(format="bgr24")
+                        # buffer = io.BytesIO()
+                        uuid = uuid4()
+                        uuids.append(uuid)
+                        # img.save(f"{uuid}.jpg")
+                        cv2.imwrite(f"{uuid}.jpg", img)
+                        # buffer.seek(0)
+                        sendingfiles.append( discord.File(f"{uuid}.jpg") )
+                        final_message+= (f"<{vidurl}> ({vidinfo.get("title", "Could not get title.")}), approximately {format_seconds(math.floor(frame))}\n")
+                        # await message.edit(content=, file=)
+                        vidContainer.close()
+                        # buffer.close()
+                        messagestosend.append(final_message)
+                except Exception as e:
+                    print(e)
+                    # await ctx.reply("erm...i failed...im so sorry...")
+            finalfiles.append(sendingfiles)
+            sendingfiles = []
+        for final_message, sendingfiles in zip(messagestosend, finalfiles):    
+            await ctx.reply(files=sendingfiles, content=final_message)
+        for uid in uuids:
+            os.remove(f"{uid}.jpg")
 # [/]
 
 
