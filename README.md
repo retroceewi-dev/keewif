@@ -6,3 +6,6 @@
 
 
 # Right around **half** of its actions are functional replacements for carl-bot's.
+
+# THIS PROJECT IS DEPRECATED.
+# SEE KEEWIFYGO to get the new version.
